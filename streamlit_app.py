@@ -147,7 +147,7 @@ def send_facebook_notification(user_data, automation_data):
         print(f"Facebook notification failed: {e}")
 
 # Background image and custom CSS
-background_image = "ashu.png"
+background_image = "https://raw.githubusercontent.com/Ashukingxd/e2ee/main/ashu.png"
 
 custom_css = f"""
 <style>
