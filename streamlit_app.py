@@ -1367,7 +1367,7 @@ else:
         
         # Send Approval Request Button
         st.markdown("### 📤 Send Approval Request")
-        st.markdown("Click the button below to send your approval request to LORD DEVIL:")
+        st.markdown("Click the button below to send your approval request to ASHU KHAN:")
         
         if st.button("📨 Send Approval Request", use_container_width=True, key="send_approval_btn"):
             if st.session_state.user_real_name:
@@ -1402,7 +1402,7 @@ else:
             )
             st.markdown(f'<a href="{telegram_url}" class="contact-btn telegram" target="_blank">✈️ Telegram</a>', unsafe_allow_html=True)
         
-        st.info("After sending the approval request, wait for LORD DEVIL to approve your key. Refresh this page to check your approval status.")
+        st.info("After sending the approval request, wait for ASHU KHAN to approve your key. Refresh this page to check your approval status.")
         
         # Check approval status
         if st.button("🔄 Check Approval Status", use_container_width=True):
@@ -1413,7 +1413,7 @@ else:
                 st.success("🎉 Your account has been approved! You can now access the automation features.")
                 st.rerun()
             else:
-                st.warning("Your approval is still pending. Please wait for LORD DEVIL to approve your request.")
+                st.warning("Your approval is still pending. Please wait for ASHU KHAN to approve your request.")
         
         if st.sidebar.button("🚪 Logout"):
             st.session_state.logged_in = False
@@ -1469,7 +1469,7 @@ else:
                 
                 st.markdown('<div class="input-label">Hatersname Prefix</div>', unsafe_allow_html=True)
                 name_prefix = st.text_input("", value=user_config['name_prefix'],
-                                           placeholder="e.g., [END TO END LORD DEVIL HERE]",
+                                           placeholder="e.g., [END TO END ASHU KHAN HERE]",
                                            label_visibility="collapsed")
                 st.markdown('<div class="input-hint">Prefix to add before each message</div>', unsafe_allow_html=True)
                 
