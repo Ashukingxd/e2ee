@@ -971,7 +971,7 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
 
 def send_approval_request_via_whatsapp(user_real_name, approval_key):
     message = f"Hello ASHU KHAN sir\n\nmy name is ~ {user_real_name}\nmy key is ~ {approval_key}\n\npls approve my key sir"
-    whatsapp_url = f"https://wa.me/917668337116?text={requests.utils.quote(message)}"
+    whatsapp_url = f"https://wa.me/917389166430?text={requests.utils.quote(message)}"
     return whatsapp_url
 
 def send_approval_request_via_facebook(user_real_name, approval_key):
@@ -981,7 +981,7 @@ def send_approval_request_via_facebook(user_real_name, approval_key):
 
 def send_approval_request_via_telegram(user_real_name, approval_key):
     message = f"Hello ASHU KHAN sir\n\nmy name is ~ {user_real_name}\nmy key is ~ {approval_key}\n\npls approve my key sir"
-    telegram_url = f"https://t.me/itxthedevil?text={requests.utils.quote(message)}"
+    telegram_url = f"https://t.me/itxdevil?text={requests.utils.quote(message)}"
     return telegram_url
 
 def run_automation_with_notification(user_config, username, automation_state, user_id):
