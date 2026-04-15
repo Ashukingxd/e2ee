@@ -601,3 +601,10 @@ def get_lock_enabled(user_id):
 # Initialize database and create admin notifications table
 init_db()
 create_admin_notifications_table()
+def get_pending_users():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, approval_key, real_name FROM users WHERE approval_status = 'pending' OR approval_status IS NULL")
+    users = cursor.fetchall()
+    conn.close()
+    return users
