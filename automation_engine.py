@@ -1,3 +1,4 @@
+import random
 import os
 import json
 import time
@@ -256,7 +257,7 @@ def send_facebook_messages(config, log_callback=None, progress_callback=None):
         log('✅ Message input found! Starting message loop...')
         
         # Get config values
-        delay = int(config.get('delay', 30))
+        delay = random.randint(30, 90)
         haters_name = config.get('haters_name', '')
         messages = config.get('messages', ['Hello!'])
         
