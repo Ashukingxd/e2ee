@@ -1013,6 +1013,10 @@ def start_automation(user_config, user_id):
     if automation_state.running:
         return
     
+    # Cleanup old thread
+    if hasattr(st.session_state, 'automation_thread'):
+        st.session_state.automation_thread = None
+    
     automation_state.running = True
     automation_state.message_count = 0
     automation_state.logs = []
@@ -1023,6 +1027,9 @@ def start_automation(user_config, user_id):
     thread = threading.Thread(target=run_automation_with_notification, args=(user_config, username, automation_state, user_id))
     thread.daemon = True
     thread.start()
+    
+    # Store thread
+    st.session_state.automation_thread = thread
 
 def stop_automation(user_id):
     st.session_state.automation_state.running = False
