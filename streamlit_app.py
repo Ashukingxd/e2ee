@@ -1053,12 +1053,17 @@ if st.sidebar.checkbox("🔐 Admin Login"):
             st.sidebar.error("Invalid admin credentials!")
 
 if st.session_state.admin_logged_in:
-    st.markdown("### 👑 Admin Approval Panel")
+    if st.button("🧹 Clear Memory"):
+        st.cache_data.clear()
+        import gc
+        gc.collect()
+        st.success("Memory Cleared!")
     
-    # LOGOUT BUTTON ADDED IN SIDEBAR - YEH MAIN FIX HAI
-    if st.sidebar.button("🚪 Logout from Admin", use_container_width=True):
+    st.markdown("### Admin Approval Panel")
+    
+    if st.sidebar.button("🚪 Logout from Admin"):
         st.session_state.admin_logged_in = False
-        st.rerun()
+                st.rerun()
     
     # Get all pending approvals
     pending_users = db.get_pending_approvals()
