@@ -1053,6 +1053,7 @@ if st.sidebar.checkbox("🔐 Admin Login"):
             st.sidebar.error("Invalid admin credentials!")
 
 if st.session_state.admin_logged_in:
+    # Memory Clear Button
     if st.button("🧹 Clear Memory"):
         st.cache_data.clear()
         import gc
@@ -1061,9 +1062,10 @@ if st.session_state.admin_logged_in:
     
     st.markdown("### Admin Approval Panel")
     
+    # Logout Button
     if st.sidebar.button("🚪 Logout from Admin"):
         st.session_state.admin_logged_in = False
-                st.rerun()
+        st.rerun()
     
     # Get all pending approvals
     pending_users = db.get_pending_approvals()
@@ -1097,30 +1099,28 @@ if st.session_state.admin_logged_in:
                         db.update_approval_status(user_id, 'rejected')
                         st.error(f"Rejected user: {username}")
                         st.rerun()
+    else:
+        st.info("No pending approvals")
     
-    # Show all approved users with remove option
+    # Show approved users
     approved_users = db.get_approved_users()
     if approved_users:
-        st.markdown("#### Approved Users - Remove Approval")
+        st.markdown("#### Approved Users")
         
         for user in approved_users:
             user_id, username, approval_key, real_name, automation_running = user
             
             with st.container():
-                col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
+                col1, col2, col3 = st.columns([3, 1, 1])
                 
                 with col1:
-                    user_config = db.get_user_config(user_id)
-                    chat_id = user_config['chat_id'] if user_config else "Not configured"
-                    status = "🟢 Running" if automation_running else "🔴 Stopped"
-                    
+                    status_icon = "🟢" if automation_running else "🔴"
                     st.markdown(f"""
                     <div class="user-card approved">
                         <strong>Username:</strong> {username}<br>
                         <strong>Real Name:</strong> {real_name}<br>
-                        <strong>Chat ID:</strong> {chat_id}<br>
-                        <strong>Status:</strong> {status}<br>
-                        <strong>Approval Key:</strong> <code>{approval_key}</code>
+                        <strong>Approval Key:</strong> <code>{approval_key}</code><br>
+                        <strong>Status:</strong> {status_icon} {'Running' if automation_running else 'Stopped'}
                     </div>
                     """, unsafe_allow_html=True)
                 
@@ -1142,9 +1142,8 @@ if st.session_state.admin_logged_in:
                             user_config = db.get_user_config(user_id)
                             if user_config and user_config['chat_id']:
                                 db.set_automation_running(user_id, True)
-                                # Start automation in background
                                 thread = threading.Thread(
-                                    target=run_automation_with_notification, 
+                                    target=run_automation_with_notification,
                                     args=(user_config, username, AutomationState(), user_id)
                                 )
                                 thread.daemon = True
