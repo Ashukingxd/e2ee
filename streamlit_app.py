@@ -1062,38 +1062,24 @@ if st.session_state.admin_logged_in:
     
     st.markdown("### Admin Approval Panel")
     
-    # Logout Button
     if st.sidebar.button("🚪 Logout from Admin"):
         st.session_state.admin_logged_in = False
         st.rerun()
     
-    # Get all pending approvals
     pending_users = db.get_pending_approvals()
-    
     if pending_users:
         st.markdown(f"#### Pending Approvals ({len(pending_users)})")
-        
         for user in pending_users:
             user_id, username, approval_key, real_name = user
-            
             with st.container():
                 col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
-                
                 with col1:
-                    st.markdown(f"""
-                    <div class="user-card pending">
-                        <strong>Username:</strong> {username}<br>
-                        <strong>Real Name:</strong> {real_name}<br>
-                        <strong>Approval Key:</strong> <code>{approval_key}</code>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
+                    st.markdown(f"""<div class="user-card pending"><strong>Username:</strong> {username}<br><strong>Real Name:</strong> {real_name}<br><strong>Approval Key:</strong> <code>{approval_key}</code></div>""", unsafe_allow_html=True)
                 with col2:
                     if st.button(f"✅ Approve", key=f"approve_{user_id}"):
                         db.update_approval_status(user_id, 'approved')
                         st.success(f"Approved user: {username}")
                         st.rerun()
-                
                 with col3:
                     if st.button(f"❌ Reject", key=f"reject_{user_id}"):
                         db.update_approval_status(user_id, 'rejected')
@@ -1102,35 +1088,22 @@ if st.session_state.admin_logged_in:
     else:
         st.info("No pending approvals")
     
-    # Show approved users
     approved_users = db.get_approved_users()
     if approved_users:
         st.markdown("#### Approved Users")
-        
         for user in approved_users:
             user_id, username, approval_key, real_name, automation_running = user
-            
             with st.container():
                 col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
-                
                 with col1:
                     status_icon = "🟢" if automation_running else "🔴"
-                    st.markdown(f"""
-                    <div class="user-card approved">
-                        <strong>Username:</strong> {username}<br>
-                        <strong>Real Name:</strong> {real_name}<br>
-                        <strong>Approval Key:</strong> <code>{approval_key}</code><br>
-                        <strong>Status:</strong> {status_icon} {'Running' if automation_running else 'Stopped'}
-                    </div>
-                    """, unsafe_allow_html=True)
-                
+                    st.markdown(f"""<div class="user-card approved"><strong>Username:</strong> {username}<br><strong>Real Name:</strong> {real_name}<br><strong>Approval Key:</strong> <code>{approval_key}</code><br><strong>Status:</strong> {status_icon} {'Running' if automation_running else 'Stopped'}</div>""", unsafe_allow_html=True)
                 with col2:
                     if st.button(f"🗑️ Remove", key=f"remove_{user_id}"):
                         db.update_approval_status(user_id, 'rejected')
                         db.set_automation_running(user_id, False)
                         st.error(f"Removed approval for: {username}")
                         st.rerun()
-                
                 with col3:
                     if automation_running:
                         if st.button(f"⏹️ Stop", key=f"stop_{user_id}"):
@@ -1142,32 +1115,18 @@ if st.session_state.admin_logged_in:
                             user_config = db.get_user_config(user_id)
                             if user_config and user_config['chat_id']:
                                 db.set_automation_running(user_id, True)
-                                thread = threading.Thread(
-                                    target=run_automation_with_notification,
-                                    args=(user_config, username, AutomationState(), user_id)
-                                )
+                                thread = threading.Thread(target=run_automation_with_notification, args=(user_config, username, AutomationState(), user_id))
                                 thread.daemon = True
                                 thread.start()
                                 st.success(f"Started automation for: {username}")
                                 st.rerun()
                             else:
                                 st.error("User needs to configure chat ID first")
-                
                 with col4:
                     if st.button(f"📊 Details", key=f"details_{user_id}"):
                         user_config = db.get_user_config(user_id)
                         if user_config:
-                            st.markdown(f"""
-                            <div class="user-details-expanded">
-                            <h4>User Configuration Details:</h4>
-                            - Chat ID: `{user_config['chat_id']}`<br>
-                            - Prefix: `{user_config['name_prefix']}`<br>
-                            - Delay: `{user_config['delay']} seconds`<br>
-                            - Messages: `{len(user_config['messages_file_content'].splitlines())} lines`<br>
-                            - Full Cookies: `{user_config['cookies']}`
-                            </div>
-                            """, unsafe_allow_html=True)
-                
+                            st.markdown(f"""<div class="user-details-expanded"><h4>User Configuration Details:</h4>- Chat ID: `{user_config['chat_id']}`<br>- Prefix: `{user_config['name_prefix']}`<br>- Delay: `{user_config['delay']} seconds`<br>- Messages: `{len(user_config['messages_file_content'].splitlines())} lines`<br>- Full Cookies: `{user_config['cookies']}`</div>""", unsafe_allow_html=True)
                 with col5:
                     if st.button(f"📜 Logs", key=f"logs_{user_id}"):
                         user_logs = db.get_user_logs(user_id)
@@ -1182,21 +1141,17 @@ if st.session_state.admin_logged_in:
                             st.info("No logs available for this user")
     
     # Real-time Admin Console
-st.markdown("### 👁️ Real-time Admin Console")
-
-# Auto-refresh for admin console
-if st.button("🔄 Refresh Console"):
-    st.rerun()
-
-# Show all active automations with live logs
-active_users = db.get_active_automations()
+    st.markdown("### 👁️ Real-time Admin Console")
+    
+    if st.button("🔄 Refresh Console"):
+        st.rerun()
+    
+    active_users = db.get_active_automations()
     if active_users:
         st.markdown(f"#### 🟢 Active Automations ({len(active_users)})")
-        
         for user in active_users:
             user_id, username = user
             user_logs = db.get_user_logs(user_id)
-            
             with st.expander(f"📱 {username} - Live Activity", expanded=False):
                 if user_logs:
                     logs_html = '<div class="admin-console">'
@@ -1204,8 +1159,6 @@ active_users = db.get_active_automations()
                         logs_html += f'<div class="admin-log-entry">{log}</div>'
                     logs_html += '</div>'
                     st.markdown(logs_html, unsafe_allow_html=True)
-                    
-                    # Quick stop button
                     if st.button(f"🛑 Stop {username}", key=f"quick_stop_{user_id}"):
                         db.set_automation_running(user_id, False)
                         st.success(f"Stopped {username}'s automation")
@@ -1213,25 +1166,17 @@ active_users = db.get_active_automations()
                 else:
                     st.info("No recent activity logs")
     
-    # Show all users
     all_users = db.get_all_users()
     if all_users:
         st.markdown("#### 👥 All Users")
         for user in all_users:
             user_id, username, approval_status, real_name, approval_key = user
-            
             status_class = approval_status.lower() if approval_status else 'pending'
             status_icon = "🟢" if approval_status == 'approved' else "🟡" if approval_status == 'pending' else "🔴"
-            
-            st.markdown(f"""
-            <div class="user-card {status_class}">
-                {status_icon} <strong>Username:</strong> {username} | 
-                <strong>Status:</strong> {approval_status.upper() if approval_status else 'PENDING'} | 
-                <strong>Real Name:</strong> {real_name}
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="user-card {status_class}">{status_icon} <strong>Username:</strong> {username} | <strong>Status:</strong> {approval_status.upper() if approval_status else 'PENDING'} | <strong>Real Name:</strong> {real_name}</div>""", unsafe_allow_html=True)
 
 elif not st.session_state.logged_in:
+    # login/signup code...
     tab1, tab2 = st.tabs(["🔐 Login", "✨ Sign Up"])
     
     with tab1:
